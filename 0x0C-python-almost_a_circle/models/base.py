@@ -75,7 +75,7 @@ class Base:
                 val = cls(1, 1)
             else:
                 val = cls(1)
-            new.update(**dictionary)
+            val.update(**dictionary)
             return val
 
     @classmethod
