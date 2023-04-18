@@ -54,3 +54,19 @@ class Square(Rectangle):
             self.y = args[3]
         except IndexError:
             pass
+
+        def __str__(self):
+            """
+            String function
+            """
+            return "[{}] ({}) {}/{} - {}".format(type(self).__name__,
+                    self.id, self.x, self.y, self.width)
+
+        def to_dictionary(self):
+            """
+            Returns Dictionary
+            """
+            return {id: getattr(self, "id"),
+                    'size': getattr(self, "width"),
+                    'x': getattr(self, "x"),
+                    'y': getattr(self, "y")}
