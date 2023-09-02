@@ -1,17 +1,30 @@
 #!/usr/bin/python3
-"""list 10 commits (from the most recent to oldest) of the repository rails by the user rails."""
+'''post a request to a web server
+'''
 
-import sys
-import requests
+if __name__ == '__main__':
+    import sys
+    import requests
 
-if __name__ == "__main__":
-    url = "https://api.github.com/repos/{}/{}commits/".format(sys.argv[2], sys.argv[1])
+    headers = {'Accept': 'application/vnd.github+json',
+               'X-GitHub-Api-Version': '2022-11-28'
+               }
+    url = 'https://api.github.com/repos/{}/{}/commits'.\
+          format(sys.argv[2], sys.argv[1])
+    response = requests.get(url, headers=headers)
 
-    r = requests.get(url)
-    commits = r.json()
     try:
-        for i in range(10):
-            print("{}: {}".format(commits[i].get("sha"), commits[i].get("commit").get("author").get("name")))
-    except IndexError:
-       pass
-
+        json_arr = response.json()
+        if len(json_arr) == 0:
+            print('No result')
+        else:
+            count = 0
+            for json_obj in json_arr:
+                name = json_obj.get('commit').get('author').get('name')
+                if count < 10:
+                    print('{}: {}'.format(json_obj.get('sha'), name))
+                else:
+                    break
+                count += 1
+    except simplejson.errors.JSONDecodeError:
+        print('Not a valid JSON')
