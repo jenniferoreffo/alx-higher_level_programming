@@ -1,12 +1,18 @@
 #!/usr/bin/python3
-""" A script that lists all a states in the db hbtn_0e_0_usa that states with the letter 'N' """
-import  MYSQLdb 
-from sys import argv
+'''select specific column in database'''
+
 if __name__ == '__main__':
-""" Get all states from the db"""
-    db = MYSQLdv.connect(host="localhost", user=argv[1], port=3306, passwd=argv[2], db=argv[3])
+    import MySQLdb
+    from sys import argv
+    db = MySQLdb.connect(user=argv[1], password=argv[2],
+                         db=argv[3], host='localhost',
+                         port=3306)
     cur = db.cursor()
-    cur.execute("SELECT * FROM states \ WHERE name LIKE BINARU 'N%' \ ORDER BY states id ASC")
+    cur.execute(
+                """SELECT id, name FROM states WHERE name LIKE
+                BINARY 'N%' ORDER BY id;""")
     rows = cur.fetchall()
-    fow row in rows:
-        print(row)  
+    for row in rows:
+        print(f"{row}")
+    cur.close()
+    db.close() 

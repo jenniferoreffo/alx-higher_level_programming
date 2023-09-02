@@ -1,14 +1,17 @@
 #!/usr/bin/python3
-"""Create states table in hbtn_0e_0_usa with some data"""
-import MYSQLbd
-from sys import argv
+'''select specific column in database'''
 
 if __name__ == '__main__':
-""" Access the db and get the states from there"""
-    db = MSQLdb.connect(host="localhost", user=argv[1], port=3306, passwd=argv[2], db=argv[3])
+    import MySQLdb
+    from sys import argv
+    db = MySQLdb.connect(user=argv[1], password=argv[2],
+                         db=argv[3], host='localhost',
+                         port=3306)
     cur = db.cursor()
-    cur.execute("SELECT * FROM states \ WHERE name LIKE BINARY '{}' \ ORDER BY states.id ASC".format(argv[4]))
+    cur.execute("""SELECT id, name FROM states
+            WHERE name = BINARY '{}' ORDER BY id;""".format(argv[4]))
     rows = cur.fetchall()
     for row in rows:
-        print(row)
-
+        print(f"{row}")
+    cur.close()
+    db.close()

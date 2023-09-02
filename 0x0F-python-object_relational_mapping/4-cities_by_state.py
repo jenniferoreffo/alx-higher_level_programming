@@ -3,18 +3,23 @@
 This script lists all cities from
 the database `hbtn_0e_4_usa`.
 """
-import MYSQLdb                                          from sys import argv
 
 if __name__ == '__main__':
+    import MYSQLdb
+    from sys import argv
 
-"""
-    Access to the database and get the cities
-    from the database.
-"""
-    db = MYSQLdb.connect(host="localhost", user=argv[1], port=3306, passwd=argv[2], db=argv[3])
-    with db.cursor() as cur:
-        cur.execute("""SELECT cities.id, cities.name, states.name FROM cities JOIN states ON cities.states_id ORDER BY cities.id ASC """)
-      rows = cur.fetchall()
-if rows is not None:
-    for row in rows:
-        print(row)
+    # check if search string contains injection
+    if len(argv[4].split(' ')) != 1 or argv[4].find(';') != -1:
+        pass
+    else:
+        db = MySQLdb.connect(user=argv[1], password=argv[2],
+                             db=argv[3], host='localhost',
+                             port=3306)
+        cur = db.cursor()
+        cur.execute("""SELECT id, name FROM states
+            WHERE name = BINARY '{}' ORDER BY id;""".format(argv[4]))
+        rows = cur.fetchall()
+        for row in rows:
+            print(f"{row}")
+        cur.close()
+        db.close()

@@ -1,25 +1,23 @@
 #!/usr/bin/python3
+'''fetch all rows'''
+import sys
+from model_state import Base, State
 
-"""
-This script prints the state object id with the name passed as argumentfron the db 'htbn_0e_6_usa'
-"""
+from sqlalchemy import (create_engine)
+from sqlalchemy.orm import Session
 
-from sys import argv                                    from model_state import Base, State
-from sqlalchemy import create_engine
-from Sqlalchemy.orm import sessionmaker
+if __name__ == "__main__":
+    engine = create_engine('mysql+mysqldb://{}:{}@localhost/{}'.format(
+                           sys.argv[1], sys.argv[2], sys.argv[3]),
+                           pool_pre_ping=True)
 
-if __name__ == "__main__":                              
+    session = Session(engine)
 
-"""                                                     Access to the database and get the state from the database.
-"""
-    db_uri = 'mysql+mysqldb://{}:{}@localhost:3306/{}'.format(argv[1], argv[2], argv[3])
-    engine = create_ engine(db_uri)
-    Session = sessionmaker(bind=engine)
+    state = session.query(State).filter_by(name=sys.argv[4]).first()
 
-    session = Session()
-    instance =  session.query(State).filter(State.name == argv[4]).first()
-
-    if instance is None:
-        print('Not found')
+    if state:
+        print("{}".format(state.id))
     else:
-        print('{0}'.format(instance))
+        print('Not found')
+
+    session.close()
