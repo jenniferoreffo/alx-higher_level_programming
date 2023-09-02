@@ -2,7 +2,7 @@
 
 """ A script that lists all states from the db 'hbtn_0e_0_usa' """
 
-if __name__ == '__ main__'
+if __name__ == '__ main__':
 
 import MySQLdb
 from sys import argv
