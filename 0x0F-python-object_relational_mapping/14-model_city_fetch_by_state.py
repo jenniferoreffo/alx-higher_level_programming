@@ -1,19 +1,22 @@
 #!/usr/bin/python3
+'''fetches all rows'''
+import sys
+from model_state import Base, State
+from model_city import City
 
-""" This prints all city objects from the db htbn_0e_0_usa"""
+from sqlalchemy import (create_engine)
+from sqlalchemy.orm import Session
 
-from sys import argv                                    from model_state import Base, State
-from sqlalchemy import create_engine
-from Sqlalchemy.orm import sessionmaker
+if __name__ == "__main__":
+    engine = create_engine('mysql+mysqldb://{}:{}@localhost/{}'.format(
+                           sys.argv[1], sys.argv[2], sys.argv[3]),
+                           pool_pre_ping=True)
 
-if __name__ == "__main__":                              
-"""                                                     Access to the database and get the cities from the database."""
-    db_uri = 'mysql+mysqldb://{}:{}@localhost:3306/{}'.format(argv[1], argv[2], argv[3])
-    engine = create_ engine(db_uri)
-    Session = sessionmaker(bind=engine)                                                                             session = Session()
-    query = session.query(City, State).join(State)
+    session = Session(engine)
 
-    for _c, _s in query.all():
-        print('{}: ({d:}) {}'.format(_s.name, _c.id, _c.name))
-    session.commit()
-    session.close()
+    for result in session.query(State, City).\
+            join(City, State.id == City.state_id).all():
+        print("{}: ({}) {}".format(result[0].name,
+                                   result[1].id, result[1].name))
+
+    session.close()	

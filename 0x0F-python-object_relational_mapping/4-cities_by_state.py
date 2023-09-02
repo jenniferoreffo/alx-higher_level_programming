@@ -1,25 +1,20 @@
 #!/usr/bin/python3
 """
-This script lists all cities from
-the database `hbtn_0e_4_usa`.
+a script that lists all cities from the
+database hbtn_0e_4_usa
 """
 
 if __name__ == '__main__':
-    import MYSQLdb
+    import MySQLdb
     from sys import argv
 
-    # check if search string contains injection
-    if len(argv[4].split(' ')) != 1 or argv[4].find(';') != -1:
-        pass
-    else:
-        db = MySQLdb.connect(user=argv[1], password=argv[2],
-                             db=argv[3], host='localhost',
-                             port=3306)
-        cur = db.cursor()
-        cur.execute("""SELECT id, name FROM states
-            WHERE name = BINARY '{}' ORDER BY id;""".format(argv[4]))
-        rows = cur.fetchall()
-        for row in rows:
-            print(f"{row}")
-        cur.close()
-        db.close()
+    db = MySQLdb.connect(host='localhost', user=argv[1],
+                         port=3306, passwd=argv[2],
+                         db=argv[3])
+    cur = db.cursor()
+    cur.execute(
+                "SELECT c.id, c.name, s.name FROM cities AS c \
+                INNER JOIN states as s ON c.state_id = s.id;")
+    rows = cur.fetchall()
+    for row in rows:
+        print(row)
